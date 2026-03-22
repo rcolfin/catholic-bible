@@ -1,0 +1,84 @@
+name: Upload Python Package
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v')
+
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Get the tag name for the release
+        id: vars
+        run: |
+            tag="${GITHUB_REF#refs/*/v}"  # refs/tags/v1.2.3 -> 1.2.3
+            echo "tag=$tag" >> $GITHUB_OUTPUT
+
+      - run: |
+          echo "tag=${{ steps.vars.outputs.tag }}"
+
+  deploy:
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v6
+
+    - name: Set up Python
+      id: setup-python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      id: setup-uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        version: latest
+        python-version: ${{ matrix.python-version }}
+        cache-suffix:  ${{ matrix.python-version }}
+
+    - name: Setup Test Results
+      run: |
+        mkdir -p ${{ github.workspace }}/build/coverage
+        mkdir -p ${{ github.workspace }}/build/test-results
+
+    - name: Run tests and collect coverage
+      run: |
+        set -euox pipefail
+        PACKAGE=$(echo "$(basename $PWD)" | tr "-" "_")
+        [ -d "${PACKAGE}" ] || PACKAGE="."
+        uv run --frozen pytest --cov-report=xml:${{ github.workspace }}/build/coverage/coverage.xml --cov="${PACKAGE}" --junitxml=${{ github.workspace }}/build/test-results/tests.xml
+
+    - name: Validate Release Version
+      shell: bash
+      run: |
+        set -euox pipefail
+        VERSION=$(grep -E '^version = "' pyproject.toml | cut -d '"' -f 2)
+        [ "${VERSION}" == "${TAG}" ] || { >&2 echo "Expected ${TAG} got ${VERSION}"; exit 1; }
+      env:
+        TAG: ${{ needs.setup.outputs.tag }}
+
+    - name: publish
+      shell: bash
+      run: |
+        uv build
+        uv publish
+      env:
+        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}

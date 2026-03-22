@@ -1,0 +1,63 @@
+name: Docs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+    contents: write
+jobs:
+  docs:
+    if: github.event_name == 'push' || !github.event.pull_request.draft
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: latest
+          python-version: ${{ matrix.python-version }}
+          cache-suffix:  ${{ matrix.python-version }}
+
+      - name: Setup Test Results
+        run: |
+          mkdir -p ${{ github.workspace }}/build/coverage
+          mkdir -p ${{ github.workspace }}/build/test-results
+
+      - name: Run tests and collect coverage
+        run: |
+          set -euox pipefail
+          PACKAGE=$(echo "$(basename $PWD)" | tr "-" "_")
+          [ -d "${PACKAGE}" ] || PACKAGE="."
+          uv run --frozen pytest --cov-report=xml:${{ github.workspace }}/build/coverage/coverage.xml --cov="${PACKAGE}" --junitxml=${{ github.workspace }}/build/test-results/tests.xml
+
+      - name: Sphinx build
+        run: |
+          uv run --frozen sphinx-build docs/source _build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_build
+          force_orphan: true
