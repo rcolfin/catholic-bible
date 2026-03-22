@@ -1,0 +1,573 @@
+{
+    "book": "genesis",
+    "language": "english",
+    "number": 1,
+    "sections": [
+        {
+            "heading": "The Story of Creation.",
+            "verses": [
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "genesis",
+                                    "chapter": 2,
+                                    "end_verse": 1,
+                                    "start_verse": 1
+                                },
+                                {
+                                    "book": "genesis",
+                                    "chapter": 2,
+                                    "end_verse": 4,
+                                    "start_verse": 4
+                                },
+                                {
+                                    "book": "2maccabees",
+                                    "chapter": 7,
+                                    "end_verse": 28,
+                                    "start_verse": 28
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 8,
+                                    "end_verse": 4,
+                                    "start_verse": 4
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 33,
+                                    "end_verse": 6,
+                                    "start_verse": 6
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 89,
+                                    "end_verse": 12,
+                                    "start_verse": 12
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 90,
+                                    "end_verse": 2,
+                                    "start_verse": 2
+                                },
+                                {
+                                    "book": "wisdom",
+                                    "chapter": 11,
+                                    "end_verse": 17,
+                                    "start_verse": 17
+                                },
+                                {
+                                    "book": "sirach",
+                                    "chapter": 16,
+                                    "end_verse": 24,
+                                    "start_verse": 24
+                                },
+                                {
+                                    "book": "jeremiah",
+                                    "chapter": 10,
+                                    "end_verse": 12,
+                                    "start_verse": 12
+                                },
+                                {
+                                    "book": "acts",
+                                    "chapter": 14,
+                                    "end_verse": 15,
+                                    "start_verse": 15
+                                },
+                                {
+                                    "book": "colossians",
+                                    "chapter": 1,
+                                    "end_verse": 17,
+                                    "start_verse": 16
+                                },
+                                {
+                                    "book": "hebrews",
+                                    "chapter": 1,
+                                    "end_verse": 3,
+                                    "start_verse": 2
+                                },
+                                {
+                                    "book": "hebrews",
+                                    "chapter": 3,
+                                    "end_verse": 4,
+                                    "start_verse": 4
+                                },
+                                {
+                                    "book": "hebrews",
+                                    "chapter": 11,
+                                    "end_verse": 3,
+                                    "start_verse": 3
+                                },
+                                {
+                                    "book": "revelation",
+                                    "chapter": 4,
+                                    "end_verse": 11,
+                                    "start_verse": 11
+                                }
+                            ],
+                            "text": "Gn 2:1, 4; 2 Mc 7:28; Ps 8:4; 33:6; 89:12; 90:2; Wis 11:17; Sir 16:24; Jer 10:12; Acts 14:15; Col 1:16–17; Heb 1:2–3; 3:4; 11:3; Rev 4:11"
+                        }
+                    ],
+                    "number": 1,
+                    "text": "In the beginning, when God created the heavens and the earth —"
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "jeremiah",
+                                    "chapter": 4,
+                                    "end_verse": 23,
+                                    "start_verse": 23
+                                }
+                            ],
+                            "text": "Jer 4:23"
+                        }
+                    ],
+                    "number": 2,
+                    "text": "and the earth was without form or shape, with darkness over the abyss and a mighty wind sweeping over the waters—"
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "2corinthians",
+                                    "chapter": 4,
+                                    "end_verse": 6,
+                                    "start_verse": 6
+                                }
+                            ],
+                            "text": "2 Cor 4:6"
+                        }
+                    ],
+                    "number": 3,
+                    "text": "Then God said: Let there be light, and there was light."
+                },
+                {
+                    "number": 4,
+                    "text": "God saw that the light was good. God then separated the light from the darkness."
+                },
+                {
+                    "number": 5,
+                    "text": "God called the light “day,” and the darkness he called “night.” Evening came, and morning followed—the first day."
+                },
+                {
+                    "number": 6,
+                    "text": "Then God said: Let there be a dome in the middle of the waters, to separate one body of water from the other."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "proverbs",
+                                    "chapter": 8,
+                                    "end_verse": 28,
+                                    "start_verse": 27
+                                },
+                                {
+                                    "book": "2peter",
+                                    "chapter": 3,
+                                    "end_verse": 5,
+                                    "start_verse": 5
+                                }
+                            ],
+                            "text": "Prv 8:27–28; 2 Pt 3:5"
+                        }
+                    ],
+                    "number": 7,
+                    "text": "God made the dome, and it separated the water below the dome from the water above the dome. And so it happened."
+                },
+                {
+                    "number": 8,
+                    "text": "God called the dome “sky.” Evening came, and morning followed—the second day."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "job",
+                                    "chapter": 38,
+                                    "end_verse": 8,
+                                    "start_verse": 8
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 33,
+                                    "end_verse": 7,
+                                    "start_verse": 7
+                                },
+                                {
+                                    "book": "jeremiah",
+                                    "chapter": 5,
+                                    "end_verse": 22,
+                                    "start_verse": 22
+                                }
+                            ],
+                            "text": "Jb 38:8; Ps 33:7; Jer 5:22"
+                        }
+                    ],
+                    "number": 9,
+                    "text": "Then God said: Let the water under the sky be gathered into a single basin, so that the dry land may appear. And so it happened: the water under the sky was gathered into its basin, and the dry land appeared."
+                },
+                {
+                    "number": 10,
+                    "text": "God called the dry land “earth,” and the basin of water he called “sea.” God saw that it was good."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "psalms",
+                                    "chapter": 104,
+                                    "end_verse": 14,
+                                    "start_verse": 14
+                                }
+                            ],
+                            "text": "Ps 104:14"
+                        }
+                    ],
+                    "number": 11,
+                    "text": "Then God said: Let the earth bring forth vegetation: every kind of plant that bears seed and every kind of fruit tree on earth that bears fruit with its seed in it. And so it happened:"
+                },
+                {
+                    "number": 12,
+                    "text": "the earth brought forth vegetation: every kind of plant that bears seed and every kind of fruit tree that bears fruit with its seed in it. God saw that it was good."
+                },
+                {
+                    "number": 13,
+                    "text": "Evening came, and morning followed—the third day."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "job",
+                                    "chapter": 26,
+                                    "end_verse": 10,
+                                    "start_verse": 10
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 19,
+                                    "end_verse": 3,
+                                    "start_verse": 2
+                                },
+                                {
+                                    "book": "baruch",
+                                    "chapter": 3,
+                                    "end_verse": 33,
+                                    "start_verse": 33
+                                }
+                            ],
+                            "text": "Jb 26:10; Ps 19:2–3; Bar 3:33"
+                        }
+                    ],
+                    "number": 14,
+                    "text": "Then God said: Let there be lights in the dome of the sky, to separate day from night. Let them mark the seasons, the days and the years,"
+                },
+                {
+                    "number": 15,
+                    "text": "and serve as lights in the dome of the sky, to illuminate the earth. And so it happened:"
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "deuteronomy",
+                                    "chapter": 4,
+                                    "end_verse": 19,
+                                    "start_verse": 19
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 136,
+                                    "end_verse": 9,
+                                    "start_verse": 7
+                                },
+                                {
+                                    "book": "wisdom",
+                                    "chapter": 13,
+                                    "end_verse": 4,
+                                    "start_verse": 2
+                                },
+                                {
+                                    "book": "jeremiah",
+                                    "chapter": 31,
+                                    "end_verse": 35,
+                                    "start_verse": 35
+                                }
+                            ],
+                            "text": "Dt 4:19; Ps 136:7–9; Wis 13:2–4; Jer 31:35"
+                        }
+                    ],
+                    "number": 16,
+                    "text": "God made the two great lights, the greater one to govern the day, and the lesser one to govern the night, and the stars."
+                },
+                {
+                    "number": 17,
+                    "text": "God set them in the dome of the sky, to illuminate the earth,"
+                },
+                {
+                    "number": 18,
+                    "text": "to govern the day and the night, and to separate the light from the darkness. God saw that it was good."
+                },
+                {
+                    "number": 19,
+                    "text": "Evening came, and morning followed—the fourth day."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "job",
+                                    "chapter": 12,
+                                    "end_verse": 10,
+                                    "start_verse": 7
+                                }
+                            ],
+                            "text": "Jb 12:7–10"
+                        }
+                    ],
+                    "number": 20,
+                    "text": "Then God said: Let the water teem with an abundance of living creatures, and on the earth let birds fly beneath the dome of the sky."
+                },
+                {
+                    "number": 21,
+                    "text": "God created the great sea monsters and all kinds of crawling living creatures with which the water teems, and all kinds of winged birds. God saw that it was good,"
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "genesis",
+                                    "chapter": 8,
+                                    "end_verse": 17,
+                                    "start_verse": 17
+                                }
+                            ],
+                            "text": "Gn 8:17"
+                        }
+                    ],
+                    "number": 22,
+                    "text": "and God blessed them, saying: Be fertile, multiply, and fill the water of the seas; and let the birds multiply on the earth."
+                },
+                {
+                    "number": 23,
+                    "text": "Evening came, and morning followed—the fifth day."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "sirach",
+                                    "chapter": 16,
+                                    "end_verse": 28,
+                                    "start_verse": 27
+                                }
+                            ],
+                            "text": "Sir 16:27–28"
+                        }
+                    ],
+                    "number": 24,
+                    "text": "Then God said: Let the earth bring forth every kind of living creature: tame animals, crawling things, and every kind of wild animal. And so it happened:"
+                },
+                {
+                    "number": 25,
+                    "text": "God made every kind of wild animal, every kind of tame animal, and every kind of thing that crawls on the ground. God saw that it was good."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "genesis",
+                                    "chapter": 5,
+                                    "end_verse": 1,
+                                    "start_verse": 1
+                                },
+                                {
+                                    "book": "genesis",
+                                    "chapter": 5,
+                                    "end_verse": 3,
+                                    "start_verse": 3
+                                },
+                                {
+                                    "book": "genesis",
+                                    "chapter": 9,
+                                    "end_verse": 6,
+                                    "start_verse": 6
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 8,
+                                    "end_verse": 6,
+                                    "start_verse": 5
+                                },
+                                {
+                                    "book": "wisdom",
+                                    "chapter": 2,
+                                    "end_verse": 23,
+                                    "start_verse": 23
+                                },
+                                {
+                                    "book": "wisdom",
+                                    "chapter": 10,
+                                    "end_verse": 2,
+                                    "start_verse": 2
+                                },
+                                {
+                                    "book": "sirach",
+                                    "chapter": 17,
+                                    "end_verse": 1,
+                                    "start_verse": 1
+                                },
+                                {
+                                    "book": "sirach",
+                                    "chapter": 17,
+                                    "end_verse": 4,
+                                    "start_verse": 3
+                                },
+                                {
+                                    "book": "matthew",
+                                    "chapter": 19,
+                                    "end_verse": 4,
+                                    "start_verse": 4
+                                },
+                                {
+                                    "book": "mark",
+                                    "chapter": 10,
+                                    "end_verse": 6,
+                                    "start_verse": 6
+                                },
+                                {
+                                    "book": "james",
+                                    "chapter": 3,
+                                    "end_verse": 7,
+                                    "start_verse": 7
+                                },
+                                {
+                                    "book": "ephesians",
+                                    "chapter": 4,
+                                    "end_verse": 24,
+                                    "start_verse": 24
+                                },
+                                {
+                                    "book": "colossians",
+                                    "chapter": 3,
+                                    "end_verse": 10,
+                                    "start_verse": 10
+                                }
+                            ],
+                            "text": "Gn 5:1, 3; 9:6; Ps 8:5–6; Wis 2:23; 10:2; Sir 17:1, 3–4; Mt 19:4; Mk 10:6; Jas 3:7; Eph 4:24; Col 3:10"
+                        }
+                    ],
+                    "number": 26,
+                    "text": "Then God said: Let us make human beings in our image, after our likeness. Let them have dominion over the fish of the sea, the birds of the air, the tame animals, all the wild animals, and all the creatures that crawl on the earth."
+                },
+                {
+                    "number": 27,
+                    "text": "God created mankind in his image; in the image of God he created them; male and female he created them."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "genesis",
+                                    "chapter": 8,
+                                    "end_verse": 17,
+                                    "start_verse": 17
+                                },
+                                {
+                                    "book": "genesis",
+                                    "chapter": 9,
+                                    "end_verse": 1,
+                                    "start_verse": 1
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 8,
+                                    "end_verse": 9,
+                                    "start_verse": 6
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 115,
+                                    "end_verse": 16,
+                                    "start_verse": 16
+                                },
+                                {
+                                    "book": "wisdom",
+                                    "chapter": 9,
+                                    "end_verse": 2,
+                                    "start_verse": 2
+                                }
+                            ],
+                            "text": "Gn 8:17; 9:1; Ps 8:6–9; 115:16; Wis 9:2"
+                        }
+                    ],
+                    "number": 28,
+                    "text": "God blessed them and God said to them: Be fertile and multiply; fill the earth and subdue it. Have dominion over the fish of the sea, the birds of the air, and all the living things that crawl on the earth."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "genesis",
+                                    "chapter": 9,
+                                    "end_verse": 3,
+                                    "start_verse": 3
+                                },
+                                {
+                                    "book": "psalms",
+                                    "chapter": 104,
+                                    "end_verse": 15,
+                                    "start_verse": 14
+                                }
+                            ],
+                            "text": "Gn 9:3; Ps 104:14–15"
+                        }
+                    ],
+                    "number": 29,
+                    "text": "God also said: See, I give you every seed-bearing plant on all the earth and every tree that has seed-bearing fruit on it to be your food;"
+                },
+                {
+                    "number": 30,
+                    "text": "and to all the wild animals, all the birds of the air, and all the living creatures that crawl on the earth, I give all the green plants for food. And so it happened."
+                },
+                {
+                    "footnotes": [
+                        {
+                            "cross_references": [
+                                {
+                                    "book": "1timothy",
+                                    "chapter": 4,
+                                    "end_verse": 4,
+                                    "start_verse": 4
+                                }
+                            ],
+                            "text": "1 Tm 4:4"
+                        }
+                    ],
+                    "number": 31,
+                    "text": "God looked at everything he had made, and found it very good. Evening came, and morning followed—the sixth day."
+                }
+            ]
+        }
+    ],
+    "title": "Genesis, Chapter 1",
+    "url": "https://bible.usccb.org/bible/genesis/1"
+}
