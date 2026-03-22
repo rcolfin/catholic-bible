@@ -1,0 +1,53 @@
+{
+    "book": "genesis",
+    "language": "english",
+    "number": 1,
+    "sections": [
+        {
+            "heading": "The Story of Creation.",
+            "verses": [
+                {
+                    "number": 1,
+                    "text": "In the beginning, when God created the heavens and the earth.",
+                    "footnote_refs": [
+                        "a"
+                    ]
+                },
+                {
+                    "number": 2,
+                    "text": "and the earth was without form or shape, with darkness over the abyss and a mighty wind sweeping over the waters."
+                },
+                {
+                    "number": 3,
+                    "text": "Then God said: Let there be light, and there was light."
+                },
+                {
+                    "number": 4,
+                    "text": "God saw that the light was good. God then separated the light from the darkness."
+                },
+                {
+                    "number": 5,
+                    "text": "God called the light \u201cday,\u201d and the darkness he called \u201cnight.\u201d Evening came, and morning followed\u2014the first day."
+                }
+            ]
+        },
+        {
+            "heading": "The Second Day.",
+            "verses": [
+                {
+                    "number": 6,
+                    "text": "Then God said: Let there be a dome in the middle of the waters, to separate one body of water from the other."
+                },
+                {
+                    "number": 7,
+                    "text": "God made the dome, and it separated the water below the dome from the water above the dome. And so it happened.",
+                    "footnote_refs": [
+                        "b"
+                    ]
+                }
+            ]
+        }
+    ],
+    "title": "Genesis, Chapter 1",
+    "url": "https://bible.usccb.org/bible/genesis/1"
+}
