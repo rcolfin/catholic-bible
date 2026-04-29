@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import sys
 from pathlib import Path
 from typing import Final
 
@@ -325,6 +326,11 @@ async def _download_book_by_book(  # noqa: PLR0913
     show_default=True,
     help="Include the book introduction chapter (chapter 0) if available.",
 )
+@click.option(
+    "--progress/--no-progress",
+    default=None,
+    help="Show progress bar. Auto-detects terminal if not specified.",
+)
 async def download_bible(  # noqa: PLR0913
     output_dir: str,
     testament: str | None,
@@ -333,11 +339,15 @@ async def download_bible(  # noqa: PLR0913
     concurrency: int,
     skip_existing: bool,  # noqa: FBT001
     include_intro: bool,  # noqa: FBT001
+    progress: bool | None,  # noqa: FBT001
 ) -> None:
     """Download the entire Bible (or a subset) to a directory as JSON files."""
     out = Path(output_dir)
     books = constants.Testament(testament).books if testament is not None else constants.ALL_BOOKS
     sem = asyncio.Semaphore(concurrency)
+
+    # Determine if we should show progress
+    should_show_progress = progress if progress is not None else sys.stderr.isatty()
 
     async with USCCB() as usccb:
         if by_chapter:
@@ -353,7 +363,16 @@ async def download_bible(  # noqa: PLR0913
         raw_results = await asyncio.gather(*coros, return_exceptions=True)
 
     downloaded = skipped = failed = total_chapters = 0
-    for book_info, result in zip(books, raw_results, strict=True):
+    for idx, (book_info, result) in enumerate(zip(books, raw_results, strict=True)):
+        if should_show_progress:
+            completed = idx + 1
+            percentage = int((completed / len(books)) * 100)
+            bar_length = 30
+            filled = int(bar_length * completed / len(books))
+            bar = "█" * filled + "░" * (bar_length - filled)
+            sys.stderr.write(f"\rDownloading: {bar} {percentage:3d}% ({completed}/{len(books)} books)")
+            sys.stderr.flush()
+
         if isinstance(result, BaseException):
             logger.error("Unexpected error processing %s: %s", book_info.name, result)
             failed += 1
@@ -366,6 +385,10 @@ async def download_bible(  # noqa: PLR0913
                 skipped += 1
             else:
                 failed += 1
+
+    if should_show_progress:
+        sys.stderr.write("\n")
+        sys.stderr.flush()
 
     print(  # noqa: T201
         f"Downloaded {downloaded} books ({total_chapters} chapters). {skipped} books skipped. {failed} books failed."
