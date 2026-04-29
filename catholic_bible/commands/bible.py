@@ -7,7 +7,7 @@ from typing import Final
 
 import asyncclick as click
 
-from catholic_bible import USCCB, _io, constants, models, utils
+from catholic_bible import USCCB, _io, constants, errors, models, utils
 from catholic_bible.commands.common import cli
 
 logger = logging.getLogger(__name__)
@@ -39,6 +39,12 @@ async def get_chapter(
     save: str | None,
 ) -> None:
     """Fetch a single Bible chapter and print it to stdout."""
+    try:
+        utils.lookup_book(book)
+    except errors.InvalidBookError as e:
+        logger.error(str(e))  # noqa: TRY400
+        raise SystemExit(1) from e
+
     async with USCCB() as usccb:
         result = await usccb.get_chapter(book, chapter, language)
         if result is None:
@@ -74,6 +80,12 @@ async def get_verse(  # noqa: PLR0913
     language: models.Language,
 ) -> None:
     """Fetch a single Bible verse or a range of verses and print to stdout."""
+    try:
+        utils.lookup_book(book)
+    except errors.InvalidBookError as e:
+        logger.error(str(e))  # noqa: TRY400
+        raise SystemExit(1) from e
+
     async with USCCB() as usccb:
         if end_verse is not None:
             end_ch = end_chapter if end_chapter is not None else chapter
@@ -118,6 +130,12 @@ async def get_book(
     include_intro: bool,  # noqa: FBT001
 ) -> None:
     """Fetch all chapters of a Bible book and print them to stdout."""
+    try:
+        utils.lookup_book(book)
+    except errors.InvalidBookError as e:
+        logger.error(str(e))  # noqa: TRY400
+        raise SystemExit(1) from e
+
     async with USCCB() as usccb:
         chapters = await usccb.get_book(book, language, include_intro=include_intro)
 
