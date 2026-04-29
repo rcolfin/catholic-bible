@@ -1,6 +1,6 @@
 [project]
 name = "catholic-bible"
-version = "0.1.0"
+version = "0.2.0"
 description = "Provides an API for scraping https://bible.usccb.org/bible/ to get Bible verses by book and language"
 authors = [
     {name = "Robert Colfin", email = "robert.m.colfin@gmail.com"},
