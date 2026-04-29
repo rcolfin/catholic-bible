@@ -407,7 +407,13 @@ class TestDownloadBibleProgress:
     async def test_progress_flag_explicit_true(self, runner: CliRunner, tmp_path: Path) -> None:
         """--progress flag should enable progress bar."""
         output_dir = str(tmp_path)
-        with patch("catholic_bible.commands.bible.USCCB"):
+        with patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
             result = await runner.invoke(
                 cli,
                 [
@@ -421,15 +427,19 @@ class TestDownloadBibleProgress:
                     "1",
                 ],
             )
-            # We're not testing actual progress output, just that flag is accepted
-            # Exit code might be error due to mocked USCCB, that's ok
-            assert result.exit_code in [0, 1, 2]
+            assert result.exit_code == 0
 
     @pytest.mark.asyncio
     async def test_progress_flag_explicit_false(self, runner: CliRunner, tmp_path: Path) -> None:
         """--no-progress flag should disable progress bar."""
         output_dir = str(tmp_path)
-        with patch("catholic_bible.commands.bible.USCCB"):
+        with patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
             result = await runner.invoke(
                 cli,
                 [
@@ -443,14 +453,19 @@ class TestDownloadBibleProgress:
                     "1",
                 ],
             )
-            # Command should accept the flag
-            assert result.exit_code in [0, 1, 2]
+            assert result.exit_code == 0
 
     @pytest.mark.asyncio
     async def test_progress_auto_detect_interactive(self, runner: CliRunner, tmp_path: Path) -> None:
         """Progress bar should show when stderr is a tty."""
         output_dir = str(tmp_path)
-        with patch("sys.stderr.isatty", return_value=True), patch("catholic_bible.commands.bible.USCCB"):
+        with patch("sys.stderr.isatty", return_value=True), patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
             result = await runner.invoke(
                 cli,
                 [
@@ -463,14 +478,19 @@ class TestDownloadBibleProgress:
                     "1",
                 ],
             )
-            # Just verify command runs
-            assert result.exit_code in [0, 1, 2]
+            assert result.exit_code == 0
 
     @pytest.mark.asyncio
     async def test_progress_auto_detect_non_interactive(self, runner: CliRunner, tmp_path: Path) -> None:
         """Progress bar should not show when stderr is not a tty."""
         output_dir = str(tmp_path)
-        with patch("sys.stderr.isatty", return_value=False), patch("catholic_bible.commands.bible.USCCB"):
+        with patch("sys.stderr.isatty", return_value=False), patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
             result = await runner.invoke(
                 cli,
                 [
@@ -483,5 +503,4 @@ class TestDownloadBibleProgress:
                     "1",
                 ],
             )
-            # Just verify command runs without progress in non-interactive mode
-            assert result.exit_code in [0, 1, 2]
+            assert result.exit_code == 0

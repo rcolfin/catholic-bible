@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup, NavigableString
 from curl_cffi import requests
 
-from catholic_bible import constants, errors, models, utils
+from catholic_bible import constants, models, utils
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -368,15 +368,9 @@ class USCCB:
             When include_intro is True, chapter 0 (the introduction) is first.
 
         Raises:
-            ValueError: If the book name is not recognised.
+            errors.InvalidBookError: If the book name is not recognised.
         """
-        try:
-            book_info = utils.lookup_book(book)
-        except errors.InvalidBookError as e:
-            msg = f"Unknown book: {book!r}"
-            if e.closest_match:
-                msg += f" (did you mean: {e.closest_match}?)"
-            raise ValueError(msg) from e
+        book_info = utils.lookup_book(book)
 
         first_chapter = 0 if include_intro else 1
         num_chapters = book_info.num_chapters

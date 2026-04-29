@@ -7,7 +7,7 @@ from typing import Any, Final
 import pytest
 from curl_cffi import requests
 
-from catholic_bible import USCCB, models
+from catholic_bible import USCCB, errors, models
 
 DATA_PATH: Final[Path] = Path(__file__).parent / "data"
 
@@ -280,9 +280,9 @@ def test_usccb_build_url_multi_word_book() -> None:
 
 @pytest.mark.asyncio
 async def test_get_book_unknown_raises() -> None:
-    """Tests that get_book raises ValueError for an unknown book name."""
+    """Tests that get_book raises InvalidBookError for an unknown book name."""
     async with USCCB() as usccb:
-        with pytest.raises(ValueError, match="Unknown book"):
+        with pytest.raises(errors.InvalidBookError, match="not found"):
             await usccb.get_book("notabook")
 
 

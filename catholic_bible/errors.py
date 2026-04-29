@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 
-class InvalidBookError(Exception):
+class BibleError(Exception):
+    """Base exception for Bible lookup errors."""
+
+
+class InvalidBookError(BibleError):
     """Raised when a book name doesn't match any canonical book."""
 
     def __init__(self, book_name: str, closest_match: str | None = None) -> None:
@@ -25,7 +29,7 @@ class InvalidBookError(Exception):
         return msg
 
 
-class InvalidChapterError(Exception):
+class InvalidChapterError(BibleError):
     """Raised when a chapter number is invalid for a book."""
 
     def __init__(self, book_name: str, chapter: int, max_chapters: int) -> None:

@@ -75,7 +75,7 @@ def lookup_book(
     'Genesis'
     """
     if key is None:
-        msg = ""
+        msg = "<no book specified>"
         raise errors.InvalidBookError(msg, None)
 
     key = key.replace(" ", "").strip().casefold()
