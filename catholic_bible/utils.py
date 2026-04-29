@@ -3,13 +3,14 @@ from __future__ import annotations
 import logging
 import re
 from collections import defaultdict
+from difflib import get_close_matches
 from functools import lru_cache
 from typing import TYPE_CHECKING, Final
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-from catholic_bible import constants
+from catholic_bible import constants, errors
 from catholic_bible.constants import BibleBookInfo  # noqa: TC001
 from catholic_bible.models import Language, VerseRef
 
@@ -44,9 +45,23 @@ def book_url_name(book: BibleBookInfo) -> str:
 def lookup_book(
     key: str | None,
     language: Language = Language.ENGLISH,
-) -> BibleBookInfo | None:
+) -> BibleBookInfo:
     """
     Looks up a book by name, URL name, or abbreviation (case-insensitive).
+
+    Raises InvalidBookError if the book is not found, with an optional suggestion
+    for the closest matching book name.
+
+    Args:
+        key: Book name, URL name, or abbreviation (e.g., 'Genesis', 'gen', 'Gn')
+        language: Language for abbreviations (default ENGLISH)
+
+    Returns:
+        BibleBookInfo: The matched book
+
+    Raises:
+        InvalidBookError: If book name doesn't match any canonical book.
+            Includes fuzzy-matched suggestion if available.
 
     >>> lookup_book("genesis").name
     'Genesis'
@@ -58,13 +73,10 @@ def lookup_book(
     'Genesis'
     >>> lookup_book("Gn").name
     'Genesis'
-    >>> lookup_book(None) is None
-    True
-    >>> lookup_book("notabook") is None
-    True
     """
     if key is None:
-        return None
+        msg = ""
+        raise errors.InvalidBookError(msg, None)
 
     key = key.replace(" ", "").strip().casefold()
     ot_lookup = _get_old_testament_book_lookup(language)
@@ -75,10 +87,18 @@ def lookup_book(
     if ot_book:
         if nt_book:
             logger.warning("Ambiguous book key '%s' matches both testaments.", key)
-            return None
-        return ot_book
+        else:
+            return ot_book
 
-    return nt_book
+    if nt_book:
+        return nt_book
+
+    # No match found - find closest match for suggestion
+    all_book_names = [book.name for book in constants.ALL_BOOKS]
+    closest = get_close_matches(key, all_book_names, n=1, cutoff=0.6)
+    closest_match = closest[0] if closest else None
+
+    raise errors.InvalidBookError(key, closest_match)
 
 
 def is_footnote_id(anchor_id: str) -> bool:
@@ -168,13 +188,18 @@ def _consume_book_prefix(
 
     if token.isdigit() and remainder:
         next_parts = remainder.split(None, 1)
-        combined = lookup_book(f"{token} {next_parts[0]}", language)
-        if combined is not None:
+        try:
+            combined = lookup_book(f"{token} {next_parts[0]}", language)
             return combined, next_parts[1] if len(next_parts) > 1 else ""
-        return token, remainder
+        except errors.InvalidBookError:
+            return token, remainder
 
-    resolved = lookup_book(token, language)
-    return (resolved if resolved is not None else token), remainder
+    try:
+        resolved: BibleBookInfo | str = lookup_book(token, language)
+    except errors.InvalidBookError:
+        resolved = token
+
+    return resolved, remainder
 
 
 def _parse_verse_range(verse_part: str) -> tuple[int, int]:

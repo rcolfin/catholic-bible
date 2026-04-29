@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup, NavigableString
 from curl_cffi import requests
 
-from catholic_bible import constants, models, utils
+from catholic_bible import constants, errors, models, utils
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -370,10 +370,13 @@ class USCCB:
         Raises:
             ValueError: If the book name is not recognised.
         """
-        book_info = utils.lookup_book(book)
-        if book_info is None:
+        try:
+            book_info = utils.lookup_book(book)
+        except errors.InvalidBookError as e:
             msg = f"Unknown book: {book!r}"
-            raise ValueError(msg)
+            if e.closest_match:
+                msg += f" (did you mean: {e.closest_match}?)"
+            raise ValueError(msg) from e
 
         first_chapter = 0 if include_intro else 1
         num_chapters = book_info.num_chapters
