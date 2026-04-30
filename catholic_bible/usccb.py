@@ -368,12 +368,9 @@ class USCCB:
             When include_intro is True, chapter 0 (the introduction) is first.
 
         Raises:
-            ValueError: If the book name is not recognised.
+            errors.InvalidBookError: If the book name is not recognised.
         """
         book_info = utils.lookup_book(book)
-        if book_info is None:
-            msg = f"Unknown book: {book!r}"
-            raise ValueError(msg)
 
         first_chapter = 0 if include_intro else 1
         num_chapters = book_info.num_chapters

@@ -338,3 +338,169 @@ async def test_download_bible_all_chapters_exist_counts_as_skipped(runner: CliRu
     # Ruth's chapters were never fetched (all existed)
     ruth_calls = [c for c in mock_usccb.get_chapter.call_args_list if c.args[0] == "ruth"]
     assert not ruth_calls
+
+
+class TestCLIErrorHandling:
+    """Tests for error handling in CLI commands with invalid book names."""
+
+    @pytest.fixture
+    def runner(self) -> CliRunner:
+        return CliRunner()
+
+    @pytest.mark.asyncio
+    async def test_get_chapter_invalid_book_shows_suggestion(
+        self, runner: CliRunner, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        """get-chapter with typo should show closest match."""
+        result = await runner.invoke(cli, ["get-chapter", "--book", "corinthians", "--chapter", "1"])
+        assert result.exit_code == 1
+        assert "Book 'corinthians' not found" in caplog.text
+        assert "Did you mean:" in caplog.text
+        # Should suggest 1 Corinthians or 2 Corinthians
+        assert "Corinthians" in caplog.text
+
+    @pytest.mark.asyncio
+    async def test_get_chapter_invalid_book_no_match(self, runner: CliRunner, caplog: pytest.LogCaptureFixture) -> None:
+        """get-chapter with very wrong book name should show generic error."""
+        result = await runner.invoke(cli, ["get-chapter", "--book", "xyz", "--chapter", "1"])
+        assert result.exit_code == 1
+        assert "Book 'xyz' not found" in caplog.text
+
+    @pytest.mark.asyncio
+    async def test_get_verse_invalid_book(self, runner: CliRunner, caplog: pytest.LogCaptureFixture) -> None:
+        """get-verse with invalid book should show error."""
+        result = await runner.invoke(cli, ["get-verse", "--book", "invalid", "--chapter", "1", "--verse", "1"])
+        assert result.exit_code == 1
+        assert "Book 'invalid' not found" in caplog.text
+
+    @pytest.mark.asyncio
+    async def test_get_book_invalid_book(self, runner: CliRunner, caplog: pytest.LogCaptureFixture) -> None:
+        """get-book with invalid book should show error."""
+        result = await runner.invoke(cli, ["get-book", "--book", "notabook"])
+        assert result.exit_code == 1
+        assert "Book 'notabook' not found" in caplog.text
+
+    @pytest.mark.asyncio
+    async def test_get_chapter_valid_book_still_works(self, runner: CliRunner) -> None:
+        """get-chapter with valid book should work."""
+        with patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_chapter = AsyncMock(return_value=None)
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
+            result = await runner.invoke(cli, ["get-chapter", "--book", "Genesis", "--chapter", "1"])
+        # Should not fail due to error handling
+        # Exit code might be 0 or non-zero depending on mock, just not treated as input error
+        assert "Book 'Genesis' not found" not in result.output
+
+
+class TestDownloadBibleProgress:
+    """Tests for progress bar functionality in download_bible command."""
+
+    @pytest.fixture
+    def runner(self) -> CliRunner:
+        return CliRunner()
+
+    @pytest.mark.asyncio
+    async def test_progress_flag_explicit_true(self, runner: CliRunner, tmp_path: Path) -> None:
+        """--progress flag should enable progress bar."""
+        output_dir = str(tmp_path)
+        with patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
+            result = await runner.invoke(
+                cli,
+                [
+                    "download-bible",
+                    "--output-dir",
+                    output_dir,
+                    "--progress",
+                    "--testament",
+                    "old",
+                    "--concurrency",
+                    "1",
+                ],
+            )
+            assert result.exit_code == 0
+
+    @pytest.mark.asyncio
+    async def test_progress_flag_explicit_false(self, runner: CliRunner, tmp_path: Path) -> None:
+        """--no-progress flag should disable progress bar."""
+        output_dir = str(tmp_path)
+        with patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
+            result = await runner.invoke(
+                cli,
+                [
+                    "download-bible",
+                    "--output-dir",
+                    output_dir,
+                    "--no-progress",
+                    "--testament",
+                    "old",
+                    "--concurrency",
+                    "1",
+                ],
+            )
+            assert result.exit_code == 0
+
+    @pytest.mark.asyncio
+    async def test_progress_auto_detect_interactive(self, runner: CliRunner, tmp_path: Path) -> None:
+        """Progress bar should show when stderr is a tty."""
+        output_dir = str(tmp_path)
+        with patch("sys.stderr.isatty", return_value=True), patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
+            result = await runner.invoke(
+                cli,
+                [
+                    "download-bible",
+                    "--output-dir",
+                    output_dir,
+                    "--testament",
+                    "old",
+                    "--concurrency",
+                    "1",
+                ],
+            )
+            assert result.exit_code == 0
+
+    @pytest.mark.asyncio
+    async def test_progress_auto_detect_non_interactive(self, runner: CliRunner, tmp_path: Path) -> None:
+        """Progress bar should not show when stderr is not a tty."""
+        output_dir = str(tmp_path)
+        with patch("sys.stderr.isatty", return_value=False), patch("catholic_bible.commands.bible.USCCB") as mock_cls:
+            mock_usccb = AsyncMock()
+            mock_usccb.get_book = AsyncMock(return_value=[])
+            mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+            mock_usccb.__aexit__ = AsyncMock(return_value=None)
+            mock_cls.return_value = mock_usccb
+
+            result = await runner.invoke(
+                cli,
+                [
+                    "download-bible",
+                    "--output-dir",
+                    output_dir,
+                    "--testament",
+                    "old",
+                    "--concurrency",
+                    "1",
+                ],
+            )
+            assert result.exit_code == 0

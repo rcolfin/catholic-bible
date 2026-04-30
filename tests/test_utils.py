@@ -3,42 +3,44 @@ from __future__ import annotations
 import pytest
 
 from catholic_bible.constants import BibleBookInfo
+from catholic_bible.errors import InvalidBookError
 from catholic_bible.models import Language, VerseRef
 from catholic_bible.utils import book_url_name, is_footnote_id, lookup_book, parse_cross_references
 
 
 def test_lookup_book_by_full_name() -> None:
     result = lookup_book("Genesis")
-    assert result is not None
     assert result.name == "Genesis"
 
 
 def test_lookup_book_by_url_name() -> None:
-    assert lookup_book("genesis").name == "Genesis"  # type: ignore[union-attr]
-    assert lookup_book("1corinthians").name == "1 Corinthians"  # type: ignore[union-attr]
-    assert lookup_book("songofsongs").name == "Song of Songs"  # type: ignore[union-attr]
+    assert lookup_book("genesis").name == "Genesis"
+    assert lookup_book("1corinthians").name == "1 Corinthians"
+    assert lookup_book("songofsongs").name == "Song of Songs"
 
 
 def test_lookup_book_by_long_abbreviation() -> None:
-    assert lookup_book("Gen").name == "Genesis"  # type: ignore[union-attr]
-    assert lookup_book("1Cor").name == "1 Corinthians"  # type: ignore[union-attr]
+    assert lookup_book("Gen").name == "Genesis"
+    assert lookup_book("1Cor").name == "1 Corinthians"
 
 
 def test_lookup_book_by_short_abbreviation() -> None:
-    assert lookup_book("Gn").name == "Genesis"  # type: ignore[union-attr]
+    assert lookup_book("Gn").name == "Genesis"
 
 
 def test_lookup_book_case_insensitive() -> None:
-    assert lookup_book("GENESIS").name == "Genesis"  # type: ignore[union-attr]
-    assert lookup_book("genesis").name == "Genesis"  # type: ignore[union-attr]
+    assert lookup_book("GENESIS").name == "Genesis"
+    assert lookup_book("genesis").name == "Genesis"
 
 
 def test_lookup_book_none() -> None:
-    assert lookup_book(None) is None
+    with pytest.raises(InvalidBookError):
+        lookup_book(None)
 
 
 def test_lookup_book_unknown() -> None:
-    assert lookup_book("notabook") is None
+    with pytest.raises(InvalidBookError):
+        lookup_book("notabook")
 
 
 def test_book_url_name_simple() -> None:
@@ -77,25 +79,22 @@ def test_is_footnote_id(anchor_id: str, expected: bool) -> None:  # noqa: FBT001
 
 def test_lookup_book_new_testament() -> None:
     result = lookup_book("matthew")
-    assert result is not None
     assert result.name == "Matthew"
 
 
 def test_lookup_book_new_testament_numbered() -> None:
     result = lookup_book("1john")
-    assert result is not None
     assert result.name == "1 John"
 
 
 def test_lookup_book_with_spaces() -> None:
     result = lookup_book("Song of Songs")
-    assert result is not None
     assert result.name == "Song of Songs"
 
 
 def test_lookup_book_long_abbreviation_nt() -> None:
-    assert lookup_book("Matt").name == "Matthew"  # type: ignore[union-attr]
-    assert lookup_book("Rev").name == "Revelation"  # type: ignore[union-attr]
+    assert lookup_book("Matt").name == "Matthew"
+    assert lookup_book("Rev").name == "Revelation"
 
 
 def test_book_url_name_new_testament() -> None:
@@ -105,13 +104,11 @@ def test_book_url_name_new_testament() -> None:
 
 def test_lookup_book_spanish_psalms() -> None:
     result = lookup_book("Sal", Language.SPANISH)
-    assert result is not None
     assert result.name == "Psalms"
 
 
 def test_lookup_book_spanish_revelation() -> None:
     result = lookup_book("Ap", Language.SPANISH)
-    assert result is not None
     assert result.name == "Revelation"
 
 
@@ -226,3 +223,55 @@ def test_parse_cross_references_chapter_range() -> None:
     refs = parse_cross_references("a. Sir 37\u201345.")
     assert len(refs) == 1
     assert refs[0].to_dict() == {"book": "sirach", "chapter": 37, "end_chapter": 45}
+
+
+# ---------------------------------------------------------------------------
+# lookup_book fuzzy matching tests
+# ---------------------------------------------------------------------------
+
+
+class TestLookupBookFuzzyMatching:
+    def test_lookup_book_with_close_match(self) -> None:
+        """lookup_book should suggest closest match for typo."""
+        with pytest.raises(InvalidBookError) as exc_info:
+            lookup_book("corinthians")
+
+        error = exc_info.value
+        assert error.book_name == "corinthians"
+        assert error.closest_match in ["1 Corinthians", "2 Corinthians"]
+        # One of the two should be the closest
+
+    def test_lookup_book_with_no_close_match(self) -> None:
+        """lookup_book should not suggest match for very different names."""
+        with pytest.raises(InvalidBookError) as exc_info:
+            lookup_book("xyz")
+
+        error = exc_info.value
+        assert error.book_name == "xyz"
+        assert error.closest_match is None
+
+    def test_lookup_book_valid_name_still_works(self) -> None:
+        """lookup_book should still work correctly for valid book names."""
+        # Test a few common variations
+        genesis = lookup_book("Genesis")
+        assert genesis.name == "Genesis"
+
+        matthew = lookup_book("matthew")
+        assert matthew.name == "Matthew"
+
+        psalms = lookup_book("psalms")
+        assert psalms.name == "Psalms"
+
+    def test_lookup_book_with_partial_match(self) -> None:
+        """lookup_book should handle partial matches."""
+        with pytest.raises(InvalidBookError) as exc_info:
+            lookup_book("genisis")  # typo of genesis
+
+        error = exc_info.value
+        assert error.closest_match == "Genesis"
+
+    def test_lookup_book_case_insensitive(self) -> None:
+        """lookup_book should still be case insensitive for valid names."""
+        genesis1 = lookup_book("GENESIS")
+        genesis2 = lookup_book("genesis")
+        assert genesis1.name == genesis2.name == "Genesis"
