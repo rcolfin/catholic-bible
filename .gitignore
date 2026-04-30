@@ -194,6 +194,9 @@ cython_debug/
 # Claude Code
 .claude/
 
+# Git worktrees
+.worktrees/
+
 # Vim swap files
 *.swp
 

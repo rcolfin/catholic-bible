@@ -5,8 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```sh
-# Install dependencies
+# Install dependencies and set up pre-commit hooks
 uv sync
+uvx pre-commit install
 
 # Run all tests (includes mypy, ruff check, ruff format, doctests)
 uv run pytest
@@ -33,12 +34,16 @@ uv run python -m catholic_bible get-chapter --book genesis --chapter 1
 
 ## Architecture
 
+### Core Modules
+
 `catholic_bible/` contains:
 - `usccb.py` — Async HTTP client (`USCCB` class) + HTML parsing pipeline
-- `models.py` — Immutable `NamedTuple` types: `BibleVerse`, `BibleSection`, `BibleChapter`, `Language`
+- `models.py` — Immutable `NamedTuple` types: `VerseRef`, `BibleFootnote`, `BibleVerse`, `BibleSection`, `BibleChapter`, `Language` (supports English/Spanish)
 - `constants.py` — All 73 Catholic canon books as typed named tuples (`OLD_TESTAMENT_BOOKS`, `NEW_TESTAMENT_BOOKS`, `ALL_BOOKS`, `BIBLE_BOOKS` dict)
 - `utils.py` — `lookup_book()` and `book_url_name()` helpers
-- `commands/` — `asyncclick` CLI commands (`list-books`, `get-chapter`, `get-verse`, `get-book`)
+- `_io.py` — Async JSON file writer (`write_file()`)
+- `__main__.py` — CLI entry point
+- `commands/` — `asyncclick` CLI group and commands (`list-books`, `get-chapter`, `get-verse`, `get-book`, `download-bible`)
 
 ### HTML Parsing Pipeline
 
