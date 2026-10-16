@@ -17,6 +17,7 @@ def _setup_mock(monkeypatch: Any, html_path: Path) -> None:
         def __init__(self, text: str) -> None:
             self.text = text
             self.status_code = 200
+            self.headers: dict[str, str] = {}
 
         def raise_for_status(self: MockResponse) -> None:
             pass
@@ -131,6 +132,8 @@ async def test_get_chapter_no_chapter_heading(monkeypatch: Any) -> None:
     class MockResponse:
         def __init__(self, text: str) -> None:
             self.text = text
+            self.status_code = 200
+            self.headers: dict[str, str] = {}
 
         def raise_for_status(self) -> None:
             pass
@@ -173,6 +176,8 @@ async def test_get_chapter_spanish_structure(monkeypatch: Any) -> None:
     class MockResponse:
         def __init__(self, text: str) -> None:
             self.text = text
+            self.status_code = 200
+            self.headers: dict[str, str] = {}
 
         def raise_for_status(self) -> None:
             pass
@@ -318,6 +323,8 @@ def _make_mock_response(html: str) -> Any:
     class MockResponse:
         def __init__(self, text: str) -> None:
             self.text = text
+            self.status_code = 200
+            self.headers: dict[str, str] = {}
 
         def raise_for_status(self) -> None:
             pass

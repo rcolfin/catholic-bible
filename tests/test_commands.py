@@ -12,6 +12,7 @@ import pytest
 from asyncclick.testing import CliRunner
 
 from catholic_bible import models
+from catholic_bible.challenge import ENV_PREFIX, BrowserConfig
 from catholic_bible.commands.bible import _fetch_and_write_chapter
 from catholic_bible.commands.common import cli
 
@@ -504,3 +505,57 @@ class TestDownloadBibleProgress:
                 ],
             )
             assert result.exit_code == 0
+
+
+# ---------------------------------------------------------------------------
+# browser options
+# ---------------------------------------------------------------------------
+
+
+async def _invoke_with_browser_options(
+    runner: CliRunner, args: list[str], env: dict[str, str]
+) -> tuple[int, BrowserConfig | None]:
+    with patch("catholic_bible.commands.bible.USCCB") as mock_usccb_cls:
+        mock_usccb = AsyncMock()
+        mock_usccb.get_chapter = AsyncMock(return_value=_make_chapter("genesis", 1))
+        mock_usccb.__aenter__ = AsyncMock(return_value=mock_usccb)
+        mock_usccb.__aexit__ = AsyncMock(return_value=None)
+        mock_usccb_cls.return_value = mock_usccb
+        result = await runner.invoke(cli, [*args, "get-chapter", "--book", "genesis", "--chapter", "1"], env=env)
+    config = mock_usccb_cls.call_args.args[0] if mock_usccb_cls.call_args else None
+    if result.exit_code == 0:
+        assert "Genesis, Chapter 1" in result.output
+    return result.exit_code, config
+
+
+@pytest.mark.asyncio
+async def test_browser_options_override_environment(runner: CliRunner) -> None:
+    env = {f"{ENV_PREFIX}CHANNEL": "chrome", f"{ENV_PREFIX}TIMEOUT": "45", f"{ENV_PREFIX}HEADLESS": "false"}
+    exit_code, config = await _invoke_with_browser_options(runner, ["--browser-timeout", "10"], env)
+    assert exit_code == 0
+    assert config == BrowserConfig(channel="chrome", headless=False, timeout=10.0)
+
+
+@pytest.mark.asyncio
+async def test_browser_connection_option_replaces_environment_connection(runner: CliRunner) -> None:
+    env = {f"{ENV_PREFIX}CDP_URL": "http://127.0.0.1:9222", f"{ENV_PREFIX}TIMEOUT": "45"}
+    exit_code, config = await _invoke_with_browser_options(
+        runner, ["--browser-ws-endpoint", "ws://127.0.0.1:3000/"], env
+    )
+    assert exit_code == 0
+    assert config == BrowserConfig(ws_endpoint="ws://127.0.0.1:3000/", timeout=45.0)
+
+
+@pytest.mark.asyncio
+async def test_browser_options_tolerate_invalid_environment_timeout(runner: CliRunner) -> None:
+    exit_code, config = await _invoke_with_browser_options(runner, [], {f"{ENV_PREFIX}TIMEOUT": "5s"})
+    assert exit_code == 0
+    assert config == BrowserConfig()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("timeout", ["0", "-1"])
+async def test_browser_timeout_must_be_positive(runner: CliRunner, timeout: str) -> None:
+    exit_code, config = await _invoke_with_browser_options(runner, ["--browser-timeout", timeout], {})
+    assert exit_code == 2  # noqa: PLR2004
+    assert config is None

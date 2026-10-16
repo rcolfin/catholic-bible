@@ -1,12 +1,10 @@
 catholic-bible
-=====
+==============
 
 Welcome to the catholic-bible documentation! Here you will find links to the core modules and examples of how to use each.
 
 
-A Python package that enables converting a US Zip Code into a timezone.
-
-Provides an API for scraping the web page from `Daily Readings <https://bible.usccb.org/bible/readings/>`_ website of United States Conference of Catholic Bishops.
+Provides an API for scraping the `Bible <https://bible.usccb.org/bible/>`_ website of United States Conference of Catholic Bishops.
 
 Modules
 -------
@@ -17,6 +15,8 @@ If there is functionality that is missing or an error in the docs, please open a
 .. toctree::
     :maxdepth: 1
 
+    browser
+    catholic_bible/challenge
     catholic_bible/constants
     catholic_bible/models
     catholic_bible/usccb
@@ -32,6 +32,11 @@ You can also clone the repo and run the following command in the project root to
 
     $ pip install -e .
 
+The site sometimes requires a browser to pass a JavaScript challenge. Browser support is optional; to enable it,
+install the ``browser`` extra (see :doc:`browser` for configuration and Docker usage):
+
+    $ pip install 'catholic-bible[browser]'
+
 Indices and tables
 ------------------
 
@@ -40,75 +45,62 @@ Indices and tables
 * :ref:`search`
 
 Examples
------------------
+--------
 
-The following example queries for the mass on a particular date:
+The following example fetches a chapter:
 
-.. code-block:: Python
+.. code-block:: python
+
     import asyncio
-    import datetime
 
-    from catholic_bible import USCCB, models
+    from catholic_bible import USCCB
+
+    async def main() -> None:
+        async with USCCB() as usccb:
+            chapter = await usccb.get_chapter("genesis", 1)
+            if chapter:
+                print(chapter.title)
+                for section in chapter.sections:
+                    for verse in section.verses:
+                        print(verse)
+
+    asyncio.run(main())
+
+The following example fetches a single verse:
+
+.. code-block:: python
 
     async with USCCB() as usccb:
-        mass = await usccb.get_mass(datetime.date(2024, 12, 25), models.MassType.VIGIL)
-        print(mass)
+        verse = await usccb.get_verse("john", 3, 16)
+        if verse:
+            print(verse.text)
 
-The following example queries for a range of Sunday masses:
+The following example fetches all chapters of a book, in Spanish:
 
-.. code-block:: Python
+.. code-block:: python
+
+    from catholic_bible import models
+
     async with USCCB() as usccb:
-        dates = usccb.get_sunday_mass_dates(datetime.date(2024, 12, 25), datetime.date(2025, 1, 25))
-        tasks = [usccb.get_mass_from_date(dt, types) for dt in dates]
-        responses = await asyncio.gather(*tasks)
-        masses = [m for m in responses if m]
-        masses.sort(key=lambda m: m.date.toordinal() if m.date else -1)
-        for mass in masses:
-            end = "\n" if mass is masses[-1] else "\n\n"
-            print(mass, end=end)
+        chapters = await usccb.get_book("psalms", language=models.Language.SPANISH)
+        for chapter in chapters:
+            print(chapter.title)
 
-To query for a range of masses (step how you want to):
-
-.. code-block:: Python
-    async with USCCB() as usccb:
-        dates = usccb.get_mass_dates(datetime.date(2024, 12, 25), datetime.date(2025, 1, 25), step=datetime.timedelta(days=1))
-        tasks = [usccb.get_mass_from_date(dt) for dt in dates]
-        responses = await asyncio.gather(*tasks)
-        masses = [m for m in responses if m]
-        masses.sort(key=lambda m: m.date.toordinal() if m.date else -1)
-        for mass in masses:
-            end = "\n" if mass is masses[-1] else "\n\n"
-            print(mass, end=end)
-
-To query for the available mass types for a particular date:
-
-.. code-block:: Python
-    async with USCCB() as usccb:
-        mass_types = await usccb.get_mass_types(datetime.date(2024, 12, 25))
-        for mass_type in mass_types:
-            print(mass_type.name)
+As a CLI:
 
 .. code-block:: bash
 
-    # To get a mass for a particular date:
-    python -m catholic_bible get-mass --date 2024-12-25 --type vigil
+    # List all 73 books
+    python -m catholic_bible list-books
 
-    # To query for a range of Sunday masses:
-    python -m catholic_bible get-sunday-mass-range --start 2024-12-25 --end 2025-01-01
+    # Fetch a chapter and print it
+    python -m catholic_bible get-chapter --book genesis --chapter 1
 
-    # To query for a range of masses (step how you want to):
-    python -m catholic_bible get-mass-range --start 2024-12-25 --end 2025-01-01 --step 7
+    # Fetch a chapter and save it to JSON
+    python -m catholic_bible get-chapter --book genesis --chapter 1 --save genesis-1.json
 
-    # To query for a list of mass types on a particular date:
-    python -m catholic_bible get-mass-types --date 2025-12-25
+    # Fetch a single verse
+    python -m catholic_bible get-verse --book john --chapter 3 --verse 16
 
-    # or saving to a file...
-
-    # To get a mass for a particular date:
-    python -m catholic_bible get-mass --date 2024-12-25 --type vigil --save mass.json
-
-    # To query for a range of Sunday masses:
-    python -m catholic_bible get-sunday-mass-range --start 2024-12-25 --end 2025-01-01 --save mass.json
-
-    # To query for a range of masses (step how you want to):
-    python -m catholic_bible get-mass-range --start 2024-12-25 --end 2025-01-01 --step 7 --save mass.json
+    # Fetch an entire book
+    python -m catholic_bible get-book --book psalms
