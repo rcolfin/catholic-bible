@@ -9,6 +9,7 @@ from typing import Final
 import asyncclick as click
 
 from catholic_bible import USCCB, _io, constants, errors, models, utils
+from catholic_bible.challenge import BrowserConfig
 from catholic_bible.commands.common import cli
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ async def get_chapter(
         logger.error(str(e))  # noqa: TRY400
         raise SystemExit(1) from e
 
-    async with USCCB() as usccb:
+    async with USCCB(click.get_current_context().find_object(BrowserConfig)) as usccb:
         result = await usccb.get_chapter(book, chapter, language)
         if result is None:
             logger.error("Failed to retrieve %s chapter %d (%s)", book, chapter, language.name)
@@ -87,7 +88,7 @@ async def get_verse(  # noqa: PLR0913
         logger.error(str(e))  # noqa: TRY400
         raise SystemExit(1) from e
 
-    async with USCCB() as usccb:
+    async with USCCB(click.get_current_context().find_object(BrowserConfig)) as usccb:
         if end_verse is not None:
             end_ch = end_chapter if end_chapter is not None else chapter
             results = await usccb.get_verse_range(book, chapter, verse, end_ch, end_verse, language)
@@ -137,7 +138,7 @@ async def get_book(
         logger.error(str(e))  # noqa: TRY400
         raise SystemExit(1) from e
 
-    async with USCCB() as usccb:
+    async with USCCB(click.get_current_context().find_object(BrowserConfig)) as usccb:
         chapters = await usccb.get_book(book, language, include_intro=include_intro)
 
     if not chapters:
@@ -349,7 +350,7 @@ async def download_bible(  # noqa: PLR0913
     # Determine if we should show progress
     should_show_progress = progress if progress is not None else sys.stderr.isatty()
 
-    async with USCCB() as usccb:
+    async with USCCB(click.get_current_context().find_object(BrowserConfig)) as usccb:
         if by_chapter:
             coros = [
                 _download_book_by_chapter(usccb, book_info, out, language, sem, skip_existing, include_intro)

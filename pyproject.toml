@@ -1,6 +1,6 @@
 [project]
 name = "catholic-bible"
-version = "0.2.0"
+version = "0.3.0"
 description = "Provides an API for scraping https://bible.usccb.org/bible/ to get Bible verses by book and language"
 authors = [
     {name = "Robert Colfin", email = "robert.m.colfin@gmail.com"},
@@ -53,8 +53,18 @@ dev = [
 [project.scripts]
 catholic-bible = "catholic_bible.__main__:main"
 
+[project.optional-dependencies]
+browser = [
+    "playwright>=1.49",
+]
+
 [tool.pytest.ini_options]
 addopts = "--doctest-modules --mypy --ruff --ruff-format"
+
+[[tool.mypy.overrides]]
+# Optional dependency (the `browser` extra).
+module = ["playwright.*"]
+ignore_missing_imports = true
 
 [tool.ruff]
 exclude = [
