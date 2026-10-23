@@ -398,7 +398,7 @@ class USCCB:
         chapters.sort(key=lambda c: c.number)
         return chapters
 
-    async def get_verse_range(  # noqa: PLR0913
+    async def get_verse_range(  # noqa: PLR0913, PLR0917
         self,
         book: str,
         start_chapter: int,

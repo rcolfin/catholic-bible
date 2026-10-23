@@ -73,7 +73,7 @@ async def get_chapter(
     callback=_get_language,
     help="Bible language.",
 )
-async def get_verse(  # noqa: PLR0913
+async def get_verse(  # noqa: PLR0913, PLR0917
     book: str,
     chapter: int,
     verse: int,
@@ -200,7 +200,7 @@ async def _fetch_and_write_chapter(
     return True
 
 
-async def _download_book_by_chapter(  # noqa: PLR0913
+async def _download_book_by_chapter(  # noqa: PLR0913, PLR0917
     usccb: USCCB,
     book_info: constants.BibleBookInfo,
     out: Path,
@@ -236,7 +236,7 @@ async def _download_book_by_chapter(  # noqa: PLR0913
     return ("downloaded", written)
 
 
-async def _download_book_by_book(  # noqa: PLR0913
+async def _download_book_by_book(  # noqa: PLR0913, PLR0917
     usccb: USCCB,
     book_info: constants.BibleBookInfo,
     out: Path,
@@ -332,7 +332,7 @@ async def _download_book_by_book(  # noqa: PLR0913
     default=None,
     help="Show progress bar. Auto-detects terminal if not specified.",
 )
-async def download_bible(  # noqa: PLR0913
+async def download_bible(  # noqa: PLR0913, PLR0917
     output_dir: str,
     testament: str | None,
     language: models.Language,
