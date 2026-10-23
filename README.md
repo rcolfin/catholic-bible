@@ -110,17 +110,19 @@ async with USCCB(BrowserConfig(cdp_url="http://127.0.0.1:9222")) as usccb:
 import asyncio
 from catholic_bible import USCCB, models
 
+
 async def main() -> None:
     async with USCCB() as usccb:
         chapter = await usccb.get_chapter("genesis", 1)
         if chapter:
-            print(chapter.title)          # "Genesis, Chapter 1"
+            print(chapter.title)  # "Genesis, Chapter 1"
             print(chapter.url)
             for section in chapter.sections:
                 if section.heading:
                     print(section.heading)
                 for verse in section.verses:
-                    print(verse)          # "1[a] In the beginning..."
+                    print(verse)  # "1[a] In the beginning..."
+
 
 asyncio.run(main())
 ```
@@ -131,11 +133,13 @@ asyncio.run(main())
 import asyncio
 from catholic_bible import USCCB, models
 
+
 async def main() -> None:
     async with USCCB() as usccb:
         verse = await usccb.get_verse("john", 3, 16)
         if verse:
             print(verse.text)
+
 
 asyncio.run(main())
 ```
@@ -146,11 +150,13 @@ asyncio.run(main())
 import asyncio
 from catholic_bible import USCCB, models
 
+
 async def main() -> None:
     async with USCCB() as usccb:
         chapters = await usccb.get_book("psalms")
     for chapter in chapters:
         print(chapter.title)
+
 
 asyncio.run(main())
 ```
@@ -163,6 +169,7 @@ import json
 from pathlib import Path
 from catholic_bible import USCCB, models
 
+
 async def main() -> None:
     async with USCCB() as usccb:
         chapters = await usccb.get_book("genesis")
@@ -172,6 +179,7 @@ async def main() -> None:
         (out / f"chapter-{chapter.number:04d}.json").write_text(
             json.dumps(chapter.to_dict(), ensure_ascii=False, indent=2)
         )
+
 
 asyncio.run(main())
 ```
@@ -184,11 +192,13 @@ Pass `language=models.Language.SPANISH` to any method:
 import asyncio
 from catholic_bible import USCCB, models
 
+
 async def main() -> None:
     async with USCCB() as usccb:
         chapter = await usccb.get_chapter("genesis", 1, language=models.Language.SPANISH)
         if chapter:
             print(chapter)
+
 
 asyncio.run(main())
 ```
@@ -199,9 +209,9 @@ asyncio.run(main())
 from catholic_bible import constants
 
 # Attribute access
-print(constants.OLD_TESTAMENT_BOOKS.Genesis.num_chapters)   # 50
-print(constants.NEW_TESTAMENT_BOOKS.Matthew.name)           # "Matthew"
-print(constants.NEW_TESTAMENT_BOOKS.Corinthians1.name)      # "1 Corinthians"
+print(constants.OLD_TESTAMENT_BOOKS.Genesis.num_chapters)  # 50
+print(constants.NEW_TESTAMENT_BOOKS.Matthew.name)  # "Matthew"
+print(constants.NEW_TESTAMENT_BOOKS.Corinthians1.name)  # "1 Corinthians"
 
 # All 73 books in canonical order
 for book in constants.ALL_BOOKS:
@@ -210,7 +220,7 @@ for book in constants.ALL_BOOKS:
 # Lookup by URL name
 genesis = constants.BIBLE_BOOKS["genesis"]
 print(genesis.short_abbreviation)  # "Gn"
-print(genesis.long_abbreviation)   # "Gen"
+print(genesis.long_abbreviation)  # "Gen"
 ```
 
 ### Book lookup utilities
@@ -220,13 +230,13 @@ Books can be looked up by full name, URL name, or abbreviation (case-insensitive
 ```python
 from catholic_bible.utils import lookup_book, book_url_name
 
-book = lookup_book("Gen")          # long abbreviation
-book = lookup_book("Gn")           # short abbreviation
-book = lookup_book("genesis")      # URL name (lowercase, no spaces)
-book = lookup_book("Genesis")      # full display name
+book = lookup_book("Gen")  # long abbreviation
+book = lookup_book("Gn")  # short abbreviation
+book = lookup_book("genesis")  # URL name (lowercase, no spaces)
+book = lookup_book("Genesis")  # full display name
 book = lookup_book("Song of Songs")
 
-print(book_url_name(book))         # "songofsongs"
+print(book_url_name(book))  # "songofsongs"
 ```
 
 ## CLI Usage
